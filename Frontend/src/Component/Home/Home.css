@@ -1,0 +1,123 @@
+/* Home Page Container */
+.home-page {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden; /* Hide anything overflowing */
+  }
+  
+  /* Video Background */
+  .video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure video covers the entire screen */
+    z-index: -1; /* Keep the video behind content */
+  }
+  
+  /* Content Overlay */ 
+  .content-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    z-index: 1;
+    padding: 20px;
+    max-width: 90%;
+    transition: opacity 0.3s ease;
+  }
+  
+  .main-title {
+    font-size: 4rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .sub-title {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+  }
+  
+  /* Button Styling */
+  .Header-interactive-btn {
+    background-color: #3498db;
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .Header-interactive-btn:hover {
+    background-color: #2980b9;
+  }
+  
+  /* Hidden content that appears after clicking the button */
+  .additional-content {
+    margin-top: 30px;
+    font-size: 1.2rem;
+    color: white;
+  }
+  
+  .explore-btn {
+    background-color: #e67e22;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+  
+  .explore-btn:hover {
+    background-color: #d35400;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .main-title {
+      font-size: 2.5rem;
+    }
+  
+    .sub-title {
+      font-size: 1.2rem;
+    }
+  
+    .Header-interactive-btn {
+      font-size: 1rem;
+      padding: 10px 20px;
+    }
+  
+    .explore-btn {
+      font-size: 0.9rem;
+      padding: 8px 15px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .main-title {
+      font-size: 2rem;
+    }
+  
+    .sub-title {
+      font-size: 1rem;
+    }
+  
+    .Header-interactive-btn {
+      font-size: 0.9rem;
+      padding: 8px 15px;
+    }
+  
+    .explore-btn {
+      font-size: 0.8rem;
+      padding: 6px 10px;
+    }
+  }
+  
