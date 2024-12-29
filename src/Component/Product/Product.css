@@ -1,0 +1,108 @@
+/* Product Section Styles */
+
+.product-section {
+    background: linear-gradient(to bottom, #f1f2f4, #6479be); /* Similar to the header background */
+    padding: 50px 20px;
+    color: #ffffff;
+    text-align: center;
+  }
+  
+  .product-header {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .product-second-header {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 1.5rem;
+    margin-bottom: 40px;
+    color: rgb(12, 149, 228);
+  }
+  
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  
+  .product-card {
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  }
+  
+  .product-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .product-card h3 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #1e3a8a;
+    margin: 15px 0 10px;
+  }
+  
+  .price {
+    font-size: 1rem;
+    margin-bottom: 15px;
+    color: black;
+  }
+  
+  .real-price {
+    text-decoration: line-through;
+    color: #6b7280;
+    margin-right: 10px;
+  }
+  
+  .Discounted-Price {
+    font-size: 0.9rem;
+    color: #10b981;
+    font-weight: bold;
+    margin-left:10;
+
+  }
+  
+  .product-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+  }
+  
+  .add-to-cart-btn,
+  .add-to-cart-btn-buy-n {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .add-to-cart-btn:hover,
+  .add-to-cart-btn-buy-n:hover {
+    background-color: #1d4ed8;
+  }
+  
+  .add-to-cart-btn-buy-n {
+    background-color: #10b981;
+    margin-right: 20px;
+  }
+  
+  .add-to-cart-btn-buy-n:hover {
+    background-color: #059669;
+  }
+  
