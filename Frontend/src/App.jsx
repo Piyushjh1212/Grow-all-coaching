@@ -5,6 +5,7 @@ import Header from "./Component/Header/Header";
 import Footer from "./Component/Footer/Footer";
 import SignupPage from "./Component/Header/LoginSignup/Signup";
 import LoginPage from "./Component/Header/LoginSignup/Login";
+import { PublicRoute } from "./PrivacyRoute/PublicRoute";
 
 export default function App() {
   return (
@@ -15,8 +16,8 @@ export default function App() {
         <Route path="/" element={<Home />} />
 
         {/* Login and Signup  */}
-        <Route path="/UserLogin" element={<LoginPage />} />
-        <Route path="/UserSignUp" element={<SignupPage />} />
+        <Route path="/UserLogin" element={<PublicRoute><LoginPage /></PublicRoute>} />
+        <Route path="/UserSignUp" element={ <PublicRoute><SignupPage /></PublicRoute>} />
 
 
       </Routes>

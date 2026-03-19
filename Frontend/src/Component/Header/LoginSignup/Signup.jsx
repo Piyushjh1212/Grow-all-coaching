@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./Signup.css";
 
 const SignupPage = () => {
@@ -14,6 +15,8 @@ const SignupPage = () => {
 
   const [passwordStrength, setPasswordStrength] = useState("");
   const [passwordErrors, setPasswordErrors] = useState([]);
+  const [loading, setLoading] = useState(false); // 🔥 new
+  const [successMsg, setSuccessMsg] = useState(""); // 🔥 new
 
   const handleChangeSignup = (e) => {
     const { name, value } = e.target;
@@ -34,11 +37,13 @@ const SignupPage = () => {
     if (!/[A-Z]/.test(password)) errors.push("1 uppercase letter");
     if (!/[a-z]/.test(password)) errors.push("1 lowercase letter");
     if (!/\d/.test(password)) errors.push("1 number");
-    if (!/[@$!%*?&]/.test(password)) errors.push("1 special character (!@#$%^&*)");
+    if (!/[@$!%*?&]/.test(password))
+      errors.push("1 special character (!@#$%^&*)");
     return errors;
   };
 
-  const isStrongPassword = (password) => validatePassword(password).length === 0;
+  const isStrongPassword = (password) =>
+    validatePassword(password).length === 0;
 
   const getPasswordStrength = (password) => {
     if (password.length === 0) return "";
@@ -66,22 +71,34 @@ const SignupPage = () => {
     if (!isStrongPassword(signupForm.password)) return;
 
     try {
-      const response = await fetch(
+      setLoading(true);
+      setSuccessMsg("");
+
+      const response = await axios.post(
         "http://localhost:5000/api/v1/UserLoginSignup/Signup",
+        signupForm,
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include", 
-          body: JSON.stringify(signupForm),
+          withCredentials: true,
         }
       );
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Signup failed");
+      const data = response.data;
 
-      navigate("/");
+      // ✅ data ka use
+      console.log("Signup Success:", data);
+      setSuccessMsg(data.message || "Signup successful 🎉");
+
+      // 👉 optional delay for UX
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+
     } catch (error) {
-      alert(error.message);
+      alert(
+        error.response?.data?.message || error.message || "Signup failed"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -97,6 +114,10 @@ const SignupPage = () => {
       <div className="sp-pg-container">
         <form className="sp-pg-form" onSubmit={handleSignup}>
           <h2 className="sp-pg-title">Sign Up</h2>
+
+          {successMsg && (
+            <p className="sp-success">{successMsg}</p> // 🔥 success show
+          )}
 
           <label className="sp-pg-label">Name</label>
           <input
@@ -162,8 +183,12 @@ const SignupPage = () => {
             required
           />
 
-          <button type="submit" className="sp-pg-btn" disabled={passwordErrors.length > 0}>
-            Sign Up
+          <button
+            type="submit"
+            className="sp-pg-btn"
+            disabled={passwordErrors.length > 0 || loading}
+          >
+            {loading ? "Creating Account..." : "Sign Up"}
           </button>
 
           <p className="sp-pg-text">

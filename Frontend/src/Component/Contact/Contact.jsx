@@ -1,0 +1,174 @@
+import React, { useEffect, useState } from 'react'
+import './Contact.css'
+
+export default function Contact() {
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [serverMessage, setServerMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  // Handle Input Change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    // Remove error while typing
+    setErrors(prev => ({
+      ...prev,
+      [name]: ""
+    }));
+  };
+
+  useEffect(() => {
+    if (serverMessage) {
+      const timer = setTimeout(() => {
+        setServerMessage("");
+        setIsSubmitting(false);
+      }, 1500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [serverMessage]);
+
+
+  // Validation Function
+  const validate = () => {
+    let newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required";
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Invalid email";
+    }
+
+    if (!formData.message.trim()) {
+      newErrors.message = "Message is required";
+    } else if (formData.message.trim().split(/\s+/).length < 10) {
+      newErrors.message = "Message must be at least 10 words";
+    }
+
+    return newErrors;
+  };
+
+  // Submit Handler
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const validationErrors = validate();
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const response = await fetch("http://localhost:5000/api/v1/Contact", {
+        method: "POST",
+        credentials:"include",
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+      console.log("API Response:", data);
+
+      if (!response.ok) {
+        throw new Error("Something went wrong!");
+      }
+
+      setIsSuccess(true);
+      setServerMessage("Message sent successfully!");
+
+      setFormData({
+        name: '',
+        email: '',
+        message: ''
+      });
+
+    } catch (error) {
+      console.error(error);
+      setIsSuccess(false);
+      setServerMessage("Failed to send message.");
+    }
+  };
+
+  return (
+    <section className="ct-contact-section">
+
+      <div className="ct-contact-left">
+        <div className="ct-contact-container">
+          <h2>Contact Form</h2>
+          {errors.message && <p className="ct-error">{errors.message}</p>}
+
+          <form onSubmit={handleSubmit} noValidate>
+
+            {serverMessage && (
+              <p className={isSuccess ? "ct-success" : "ct-error"}>
+                {serverMessage}
+              </p>
+            )}
+
+            {errors.name && <p className="ct-error">{errors.name}</p>}
+
+
+            <input
+              type="text"
+              name="name"
+              placeholder="Your Name"
+              value={formData.name}
+              onChange={handleChange}
+            />
+            {errors.email && <p className="ct-error">{errors.email}</p>}
+            <input
+              type="email"
+              name="email"
+              placeholder="Your Email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+
+
+            <textarea
+              name="message"
+              placeholder="Your Message"
+              value={formData.message}
+              onChange={handleChange}
+            />
+
+            <button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Sending..." : "Send Message"}
+            </button>
+
+          </form>
+        </div>
+      </div>
+
+      <div className="ct-contact-right">
+        <h2>
+          If you've any query regarding the course content, please contact us.
+        </h2>
+
+        <div className="ct-image-frame">
+          <img src="./image4444.jpg" alt="Contact" />
+        </div>
+      </div>
+
+    </section>
+  );
+}

@@ -55,6 +55,9 @@ export default function Header() {
       }
     );
 
+    const data = await res.json();
+    console.log("Logout response:", data);
+
     if (res.ok) {
       setIsLoggedIn(false); // state update
       navigate("/");        // redirect
