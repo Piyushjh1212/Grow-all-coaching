@@ -45,29 +45,30 @@ export default function Header() {
 }, []);
 
   // 🚪 Logout
- const handleLogout = async () => {
+const handleLogout = async () => {
   try {
     const res = await fetch(
       "http://localhost:5000/api/v1/UserLoginSignup/logout",
       {
         method: "POST",
-        credentials: "include" // cookie send karega
-      }
-    );
+        credentials: "include", // important for cookie
+      });
 
-    const data = await res.json();
+    const data = res.headers.get("content-type")?.includes("application/json")
+      ? await res.json()
+      : await res.text();
+
     console.log("Logout response:", data);
 
     if (res.ok) {
-      setIsLoggedIn(false); // state update
-      navigate("/");        // redirect
-      // ❌ no need for localStorage.removeItem or window.location.reload
+      setIsLoggedIn(false);
+      navigate("/");
     } else {
-      console.error("Logout failed");
+      console.error("Logout failed", data);
     }
 
   } catch (error) {
-    console.error(error);
+    console.error("Error logging out:", error);
   }
 };
 

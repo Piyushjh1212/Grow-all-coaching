@@ -1,6 +1,8 @@
 import React from 'react'
 import "./HomePage.css"
 import Contact from '../Component/Contact/Contact'
+import InstructionPage from '../Component/Instruction/Instruction'
+import Courses from '../Component/CoursePage/Course'
 
 export default function Home() {
     return (
@@ -26,7 +28,10 @@ export default function Home() {
                 </button>
             </div>
         </section>
+        <Courses/>
+        <InstructionPage/>
         <Contact/>
+        
         </>
 
     )

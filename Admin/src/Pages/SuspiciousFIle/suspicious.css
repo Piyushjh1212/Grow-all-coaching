@@ -1,0 +1,103 @@
+/* SecurityDashboard.css */
+
+/* Main container */
+.ss-dash-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;         /* Full viewport height */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+  overflow: hidden;
+}
+
+/* Title */
+.ss-dash-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 28px;
+  font-weight: 600;
+  color: #0d3b66;
+}
+
+/* Table wrapper for scrolling */
+.ss-dash-table-wrapper {
+  flex: 1;                  /* Take remaining space */
+  overflow-y: auto;          /* Scroll vertically if content overflows */
+  overflow-x: auto;          /* Scroll horizontally if needed */
+  background-color: #ffffff transparent;
+  border-radius: 12px;
+  padding: 15px;
+}
+
+/* Table styling */
+.ss-dash-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;          /* Horizontal scroll if screen too small */
+}
+
+.ss-dash-table th,
+.ss-dash-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  font-size: 14px;
+  color: #333;
+}
+
+.ss-dash-table th {
+  background-color: #0077b6; /* deep ocean blue */
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.ss-dash-table tr:hover {
+  background-color: #f1f9ff;
+}
+
+/* No logs row */
+.ss-dash-no-logs {
+  text-align: center;
+  padding: 15px;
+  font-style: italic;
+  color: #555;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ss-dash-table th,
+  .ss-dash-table td {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}
+
+
+/* Custom Scrollbar for table wrapper */
+.ss-dash-table-wrapper::-webkit-scrollbar {
+    width: 10px;              /* width of vertical scrollbar */
+    height: 10px;             /* height of horizontal scrollbar */
+}
+
+.ss-dash-table-wrapper::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);  /* track background */
+    border-radius: 10px;
+}
+
+.ss-dash-table-wrapper::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 119, 182, 0.6); /* thumb color */
+    border-radius: 10px;
+    border: 2px solid rgba(0,0,0,0.1);       /* adds spacing around thumb */
+}
+
+.ss-dash-table-wrapper::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 119, 182, 0.9); /* hover effect */
+}
+
+/* For Firefox */
+.ss-dash-table-wrapper {
+    scrollbar-width: thin;           /* thin scrollbar */
+    scrollbar-color: rgba(0,119,182,0.6) rgba(0,0,0,0.05); /* thumb track */
+}
