@@ -1,0 +1,59 @@
+/* =================== */
+/* Home SECTION */
+/* =================== */
+.hm-hero {
+    padding: 120px 20px 140px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-image: url(../assets/Home.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+}
+
+.hm-hero-top {
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.hm-hero-title {
+    max-width: 800px;
+    margin: 0 auto 25px;
+    font-size: 56px;
+    font-weight: 700;
+    line-height: 1.15;
+    color: #000;
+}
+
+.hm-hero-sub {
+    max-width: 620px;
+    margin: 0 auto 45px;
+    font-size: 18px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.hm-hero-btn {
+    padding: 16px 36px;
+    width: fit-content;
+    background: linear-gradient(135deg, #0890a5, #034050);
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.hm-hero-btn:hover {
+    background: linear-gradient(135deg, #066d84, #022f3a);
+}
+
+.hm-button-context {
+    display: flex;
+    justify-content: center;
+}
