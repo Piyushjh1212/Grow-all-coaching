@@ -1,0 +1,23 @@
+/* ==========================
+   COURSE MAIN LAYOUT
+========================== */
+
+.cmlc-course-main-layout-container {
+  display: flex;
+  background: #f5f6fa;
+  padding: 50px 50px 0 0px;
+}
+
+.cmllc-course-main-layout-left-container {
+  flex: 2;
+}
+
+.cmlrc-course-main-layout-right-container {
+  flex: 1;
+}
+
+@media (max-width: 1000px) {
+  .cmlc-course-main-layout-container{
+    flex-direction: column;
+  }
+}

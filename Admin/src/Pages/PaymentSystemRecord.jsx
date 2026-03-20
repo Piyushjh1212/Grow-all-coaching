@@ -4,4 +4,4 @@ export default function PaymentSystemRecord() {
   return (
     <div>PaymentSystemRecord</div>
   )
-}
+} 

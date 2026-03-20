@@ -18,7 +18,7 @@ export const AddCourse = async (req, res) => {
       description,
       price,
       image,
-      freeLecturesCount: 5 // default value
+      freeLecturesCount: 5, // default value
     });
 
     // Save to database
@@ -42,12 +42,11 @@ export const getAllCourses = async (req, res) => {
   }
 };
 
-
 export const addModule = async (req, res) => {
   try {
     console.log("Route hit hua ✅");
     console.log("Body:", req.body);
-    const { title, Moduleimage, Realprice,Discountprice, courseId } = req.body;
+    const { title, Moduleimage, Realprice, Discountprice, courseId } = req.body;
 
     if (!title || !Moduleimage || !Realprice || !Discountprice || !courseId) {
       return res.status(400).json({ message: "All fields are required" });
@@ -58,7 +57,7 @@ export const addModule = async (req, res) => {
       Moduleimage,
       Realprice: Number(Realprice),
       Discountprice: Number(Discountprice),
-      courseId
+      courseId,
     });
 
     const savedModule = await newmodule.save();
@@ -68,29 +67,33 @@ export const addModule = async (req, res) => {
     console.error("Error adding module:", error);
     res.status(500).json({ message: "Server error" });
   }
-}
-
-
+};
 
 export const getCourseWithModules = async (req, res) => {
   try {
-    const { id } = req.params;
+    // Clean ID: remove quotes and trim spaces
+    const rawId = req.params.id;
+    console.log("Headers:", req.headers);
+    const id = rawId.replace(/"/g, "").trim();
+
+    console.log("Requested course ID:", `"${id}"`, "length:", id.length);
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid course ID format" });
+    }
 
     const course = await Course.findById(id);
-
-    if (!course) {
-      return res.status(404).json({ message: "Course not found" });
-    }
+    if (!course) return res.status(404).json({ message: "Course not found" });
 
     const modules = await CourseModule.find({ courseId: id });
 
     res.status(200).json({
       ...course.toObject(),
-      modules
+      modules,
     });
-
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    console.error("Error in getCourseWithModules:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -105,13 +108,13 @@ export const addLecture = async (req, res) => {
       videoUrl,
       videoKey, // agar aapko videoKey rakhna hai
       isFree,
-      subtitles
+      subtitles,
     } = req.body;
 
     // ✅ Basic Validation
     if (!courseId || !moduleId || !title || !videoUrl || !videoKey) {
       return res.status(400).json({
-        message: "Course, Module, Title, Video URL and Video Key are required"
+        message: "Course, Module, Title, Video URL and Video Key are required",
       });
     }
 
@@ -128,18 +131,17 @@ export const addLecture = async (req, res) => {
       videoUrl,
       videoKey, // include only if needed
       isFree: isFree || false,
-      subtitles: formattedSubtitles
+      subtitles: formattedSubtitles,
     });
 
     res.status(201).json({
       success: true,
-      lecture: newLecture
+      lecture: newLecture,
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: error.message
+      message: error.message,
     });
   }
 };
@@ -169,18 +171,17 @@ export const getCourseWithModulesAndLectures = async (req, res) => {
     const modulesWithLectures = await Promise.all(
       modules.map(async (module) => {
         const lectures = await Lecture.find({
-          moduleId: module._id
+          moduleId: module._id,
         });
 
         return {
           ...module.toObject(),
-          lessons: lectures
+          lessons: lectures,
         };
-      })
+      }),
     );
 
     res.status(200).json(modulesWithLectures);
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });

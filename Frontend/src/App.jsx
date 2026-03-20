@@ -9,6 +9,7 @@ import SignupPage from "./Component/Header/LoginSignup/Signup";
 import LoginPage from "./Component/Header/LoginSignup/Login";
 import UserDashboard from "./Component/UserProfilePage.jsx/ProfileUserPage";
 import CourseModule from "./Component/CoursePage/CourseModule";
+import LayoutMain from "./Component/CoursePage/CourseLayout/LayoutMain";
 
 export default function App() {
   return (
@@ -24,7 +25,9 @@ export default function App() {
 
         <Route path="/UserProfileDashboard" element={ <PrivateRoute><UserDashboard /></PrivateRoute>} />
 
-        <Route path="/course/:id" element={<PrivateRoute><CourseModule /></PrivateRoute>} />
+        <Route path="/Course/:id" element={<PrivateRoute><CourseModule /></PrivateRoute>} />
+
+        <Route path="/course/:courseId/module/:moduleId/lecture/:lectureId" element={<PrivateRoute><LayoutMain /></PrivateRoute>} />
 
 
 

@@ -1,9 +1,10 @@
+// CourseModule.jsx
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./Productstyle.css";
 
 function CourseModule() {
-  const { id } = useParams();
+  const { id } = useParams(); // course ID
   const navigate = useNavigate();
 
   const [course, setCourse] = useState(null);
@@ -11,13 +12,31 @@ function CourseModule() {
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [purchasedModules, setPurchasedModules] = useState([]);
 
+  // ---------------- HELPER ----------------
+  const getFirstLectureId = (module) => {
+    // Backend: module can have lectures array OR module itself is a lecture
+    return module.lectures?.[0]?._id || module.lessons?.[0]?._id || module._id;
+  };
+
+  const isModuleValid = (moduleId) => {
+    const pm = purchasedModules.find(
+      (m) => m.module?.toString() === moduleId?.toString()
+    );
+    if (!pm) return false;
+    return new Date() <= new Date(pm.expiryDate || pm.validUntil);
+  };
+
+  // ---------------- FETCH COURSE & USER PURCHASES ----------------
   useEffect(() => {
     const fetchCourseAndPurchases = async () => {
       setLoading(true);
       try {
+        const safeId = id.toString().trim();
+
         // 1️⃣ Fetch course data
         const courseRes = await fetch(
-          `http://localhost:5000/api/v1/Courses/module/${id}`
+          `http://localhost:5000/api/v1/Courses/module/${safeId}`,
+          { credentials: "include" }
         );
         const courseData = await courseRes.json();
         setCourse(courseData.data || courseData);
@@ -25,13 +44,10 @@ function CourseModule() {
         // 2️⃣ Fetch user profile via cookie
         const userRes = await fetch(
           "http://localhost:5000/api/v1/UserLoginSignup/profile",
-          {
-            credentials: "include", // send cookie automatically
-          }
+          { credentials: "include" }
         );
 
         if (userRes.status === 401) {
-          // Not logged in
           setPurchasedModules([]);
           return;
         }
@@ -50,33 +66,18 @@ function CourseModule() {
     fetchCourseAndPurchases();
   }, [id]);
 
-  if (loading) return <p>Loading...</p>;
-  if (!course) return <p>Course not found</p>;
-
-  // Check if module is purchased & valid
-  const isModuleValid = (moduleId) => {
-    const pm = purchasedModules.find(
-      (m) => m.module?.toString() === moduleId?.toString()
-    );
-    if (!pm) return false;
-    return new Date() <= new Date(pm.expiryDate || pm.validUntil);
-  };
-
-  // Payment handler
+  // ---------------- PAYMENT ----------------
   const handlePayment = async (moduleId, amount) => {
     if (paymentLoading) return;
     setPaymentLoading(true);
 
     try {
-      // Create Razorpay order
       const orderRes = await fetch(
         "http://localhost:5000/api/v1/Razorpay/createPayment",
         {
           method: "POST",
-          credentials: "include", // cookie sent automatically
-          headers: {
-            "Content-Type": "application/json",
-          },
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ moduleId, amount }),
         }
       );
@@ -117,11 +118,22 @@ function CourseModule() {
             const verifyData = await verifyRes.json();
             if (verifyData.success) {
               alert("Payment Successful 🎉");
-              const validUntil = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+              const validUntil = new Date(
+                Date.now() + 30 * 24 * 60 * 60 * 1000
+              );
               setPurchasedModules((prev) => [
                 ...prev,
                 { module: moduleId, validUntil },
               ]);
+
+              // ✅ Auto-redirect to first lecture
+              const moduleObj = course.modules.find((m) => m._id === moduleId);
+              const firstLectureId = getFirstLectureId(moduleObj);
+              if (firstLectureId) {
+                navigate(
+                  `/course/${id}/module/${moduleId}/lecture/${firstLectureId}`
+                );
+              }
             } else {
               alert("Payment verification failed");
             }
@@ -132,12 +144,15 @@ function CourseModule() {
         theme: { color: "#0a93b2" },
         modal: {
           ondismiss: async () => {
-            await fetch("http://localhost:5000/api/v1/Razorpay/paymentFailed", {
-              method: "POST",
-              credentials: "include",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ orderId: orderData.order.id }),
-            });
+            await fetch(
+              "http://localhost:5000/api/v1/Razorpay/paymentFailed",
+              {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ orderId: orderData.order.id }),
+              }
+            );
           },
         },
       };
@@ -162,6 +177,10 @@ function CourseModule() {
       setPaymentLoading(false);
     }
   };
+
+  // ---------------- RENDER ----------------
+  if (loading) return <p>Loading...</p>;
+  if (!course) return <p>Course not found</p>;
 
   return (
     <div className="cm-products-container">
@@ -190,9 +209,12 @@ function CourseModule() {
                 {purchased ? (
                   <button
                     className="cm-btn cm-buy-btn"
-                    onClick={() =>
-                      navigate(`/course/${id}/module/${module._id}`)
-                    }
+                    onClick={() => {
+                      const firstLectureId = getFirstLectureId(module);
+                      navigate(
+                        `/course/${id}/module/${module._id}/lecture/${firstLectureId}`
+                      );
+                    }}
                   >
                     Watch Video
                   </button>
@@ -206,9 +228,7 @@ function CourseModule() {
                   </button>
                 )}
 
-                <button className="cm-Product-container-button">
-                  Brochure
-                </button>
+                <button className="cm-Product-container-button">Brochure</button>
               </div>
             </div>
           );
